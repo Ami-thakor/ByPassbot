@@ -1,7 +1,7 @@
 import pyrogram
 from pyrogram import Client
 from pyrogram import filters
-from pyrogram.types import InlineKeyboardMarkup,InlineKeyboardButton
+from pyrogram.types import InlineKeyboardMarkup,InlineKeyboardButton,Message
 import bypasser
 import os
 import ddl
@@ -13,7 +13,7 @@ import re
 
 
 # bot
-bot_token = os.environ.get("TOKEN", "6209873095:AAEd3Lsewz2XYfWrUB0HlpowXhfL0y5whNA")
+bot_token = os.environ.get("TOKEN", "6036114447:AAGzW6ktiJoU7d7bx5Sgz_feY_9dX4t4Q20")
 api_hash = os.environ.get("HASH", "cceefd3382b44d4d85be2d83201102b7") 
 api_id = os.environ.get("ID", "10956858")
 app = Client("bypass-bot",api_id=api_id, api_hash=api_hash,bot_token=bot_token)  
@@ -69,20 +69,25 @@ def loopthread(message):
 
 # start command
 @app.on_message(filters.private & filters.command(["start"]))
-def send_start(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+def send_start(_, message: Message):
+
     app.send_message(message.chat.id, f"__👋 Hi **{message.from_user.mention}**, i am Link Bypasser Bot, just send me any supported links and i will you get you results.\nCheckout /help to Read More__",
     reply_markup=InlineKeyboardMarkup([[ InlineKeyboardButton("🎭 Developer", url="https://t.me/Rahul_Thakor")]]), reply_to_message_id=message.id)
+    user_info = f"{message.chat.id}\n{message.from_user.mention}"
+    try:app.send_message("yourinviteIink",user_info)
+    except:pass
 
 
 # help command
 @app.on_message(filters.private & filters.command(["help"]))
-def send_help(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+def send_help(_, message:Message):
     app.send_message(message.chat.id, HELP_TEXT, reply_to_message_id=message.id, disable_web_page_preview=True)
 
 
 # links
 @app.on_message(filters.private & filters.text)
-def receive(app:Client, message: pyrogram.types.messages_and_media.message.Message):
+def receive(app:Client, message: Message):
+
    
     bypass = threading.Thread(target=lambda:loopthread(message),daemon=True)
     bypass.start()
